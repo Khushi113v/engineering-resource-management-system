@@ -29,9 +29,10 @@ cd engineering-resource-management-system
 
 1. Sign up at mongodb.com/cloud/atlas.
 2. Create a cluster (free tier).
-3. Add a user (e.g., `recruiter`/`RecruiterPass123`).
-4. Allow access from anywhere (`0.0.0.0/0`).
-5. Get the connection string (e.g., `mongodb+srv://recruiter:RecruiterPass123@cluster0.xxxxx.mongodb.net/engineeringDB?retryWrites=true&w=majority`).
+3. Create a user (e.g., username: `your_username`, password: `your_password`).
+4. In Network Access, add your IP address or allow access from your machine.
+Get the connection string (e.g., `mongodb+srv://your_username:your_password@cluster0.xxx.mongodb.net/engineeringDB?retryWrites=true&w=majority`) and add it to your `.env` file as `MONGODB_URI`.
+
 
 ### Step 3: Set Up the Backend
 
