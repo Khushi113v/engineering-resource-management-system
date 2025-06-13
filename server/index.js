@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -200,7 +200,8 @@ mongoose.connect(process.env.MONGO_URI)
 
     // Start the server
     app.listen(port, () => {
-      console.log(`Server running on http://localhost:${port}`);
+      console.log(`Server running on port ${port}`);
     });
+    
   })
   .catch(err => console.error('MongoDB connection error:', err));
