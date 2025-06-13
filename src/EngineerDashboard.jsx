@@ -12,7 +12,7 @@ function EngineerDashboard({ engineers, projects, assignments }) {
     const updatedSkills = skills.split(",").map(skill => skill.trim());
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:5000/api/engineers/${engineer._id}`, {
+      const response = await fetch(`https://engineering-resource-management-system-gbji.onrender.com/api/engineers/${engineer._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
