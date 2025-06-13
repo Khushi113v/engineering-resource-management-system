@@ -4,17 +4,32 @@ function AssignmentList({ assignments, engineers, projects }) {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const totalDays = (end - start) / (1000 * 60 * 60 * 24); // Difference in days
-    return Math.min(totalDays / 365 * 100, 100); // Simplified: assuming 365 days max
+    return Math.min((totalDays / 365) * 100, 100); // Simplified: assuming 365 days max
   };
 
   return (
     <div className="p-6">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Assignments</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {assignments?.map(assignment => {
-          const engineer = engineers?.find(e => e._id === assignment.engineerId._id);
-          const project = projects?.find(p => p._id === assignment.projectId._id);
-          const timelineWidth = getTimelineWidth(assignment.startDate, assignment.endDate);
+        {assignments?.map((assignment) => {
+          // ✅ Safe handling for both string and object IDs
+          const engineerId =
+            typeof assignment.engineerId === "string"
+              ? assignment.engineerId
+              : assignment.engineerId?._id;
+
+          const projectId =
+            typeof assignment.projectId === "string"
+              ? assignment.projectId
+              : assignment.projectId?._id;
+
+          const engineer = engineers?.find((e) => e._id === engineerId);
+          const project = projects?.find((p) => p._id === projectId);
+          const timelineWidth = getTimelineWidth(
+            assignment.startDate,
+            assignment.endDate
+          );
+
           return (
             <div
               key={assignment._id}
@@ -37,11 +52,11 @@ function AssignmentList({ assignments, engineers, projects }) {
               </p>
               <p className="text-gray-600 mt-1">
                 <strong className="text-gray-800">Start:</strong>{" "}
-                {new Date(assignment.startDate).toISOString().split('T')[0]}
+                {new Date(assignment.startDate).toISOString().split("T")[0]}
               </p>
               <p className="text-gray-600 mt-1">
                 <strong className="text-gray-800">End:</strong>{" "}
-                {new Date(assignment.endDate).toISOString().split('T')[0]}
+                {new Date(assignment.endDate).toISOString().split("T")[0]}
               </p>
               <div className="mt-3">
                 <p className="text-gray-600">Timeline:</p>
