@@ -11,17 +11,25 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Load role from localStorage on first load
+  // Load userRole from localStorage on first load
   useEffect(() => {
-    const savedRole = localStorage.getItem("role");
-    const token = localStorage.getItem("token");
-
-    if (savedRole && token) {
+    const savedRole = localStorage.getItem('userRole');
+    if (savedRole) {
       setUserRole(savedRole);
-    } else {
-      setUserRole(null);
     }
   }, []);
+
+  // Fetch data when userRole is set
+  useEffect(() => {
+    if (userRole) {
+      fetchData();
+    }
+  }, [userRole]);
+
+  const handleLogin = (role) => {
+    localStorage.setItem('userRole', role); // Save role
+    setUserRole(role);
+  };
 
   const fetchData = async () => {
     const token = localStorage.getItem('token');
@@ -44,9 +52,9 @@ function App() {
         }),
       ]);
 
-      if (!engineersRes.ok) throw new Error(`Failed to fetch engineers: ${engineersRes.status}`);
-      if (!projectsRes.ok) throw new Error(`Failed to fetch projects: ${projectsRes.status}`);
-      if (!assignmentsRes.ok) throw new Error(`Failed to fetch assignments: ${assignmentsRes.status}`);
+      if (!engineersRes.ok) throw new Error(`Engineers fetch failed: ${engineersRes.status}`);
+      if (!projectsRes.ok) throw new Error(`Projects fetch failed: ${projectsRes.status}`);
+      if (!assignmentsRes.ok) throw new Error(`Assignments fetch failed: ${assignmentsRes.status}`);
 
       const engineersData = await engineersRes.json();
       const projectsData = await projectsRes.json();
@@ -59,30 +67,8 @@ function App() {
     } catch (err) {
       setError('Error fetching data: ' + err.message);
       setLoading(false);
+      console.error(err);
     }
-  };
-
-  // Fetch data when role is set
-  useEffect(() => {
-    if (userRole) {
-      fetchData();
-    }
-  }, [userRole]);
-
-  // On login success
-  const handleLogin = (role) => {
-    setUserRole(role);
-    localStorage.setItem("role", role);
-  };
-
-  // Logout handler
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    setUserRole(null);
-    setEngineers([]);
-    setProjects([]);
-    setAssignments([]);
   };
 
   if (!userRole) {
@@ -104,14 +90,12 @@ function App() {
           engineers={engineers}
           projects={projects}
           assignments={assignments}
-          onLogout={handleLogout}
         />
       ) : (
         <EngineerDashboard
           engineers={engineers}
           projects={projects}
           assignments={assignments}
-          onLogout={handleLogout}
         />
       )}
     </div>
