@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import AssignmentList from './AssignmentList';
 
-function EngineerDashboard({ engineers, projects, assignments }) {
+function EngineerDashboard({ engineers, projects, assignments, onLogout }) {
   const [engineer, setEngineer] = useState(engineers[0]); // Simulate logged-in engineer (first one)
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(engineer.name);
@@ -24,7 +24,6 @@ function EngineerDashboard({ engineers, projects, assignments }) {
         const updatedEngineer = await response.json();
         setEngineer(updatedEngineer);
         setIsEditing(false);
-        // Update the engineers array in the parent state
         engineers[0] = updatedEngineer;
       } else {
         alert('Failed to update profile');
@@ -35,10 +34,21 @@ function EngineerDashboard({ engineers, projects, assignments }) {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
-        Engineer Dashboard
-      </h1>
+    <div className="p-6 relative">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold text-gray-800 text-center w-full">
+          Engineer Dashboard
+        </h1>
+        <button
+          onClick={onLogout}
+          className="absolute top-0 right-0 mt-4 mr-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Profile Section */}
       <div className="bg-white border rounded-xl p-6 shadow-lg mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">My Profile</h2>
         {isEditing ? (
@@ -124,7 +134,13 @@ function EngineerDashboard({ engineers, projects, assignments }) {
           </div>
         )}
       </div>
-      <AssignmentList assignments={myAssignments} engineers={engineers} projects={projects} />
+
+      {/* Assignments Section */}
+      <AssignmentList
+        assignments={myAssignments}
+        engineers={engineers}
+        projects={projects}
+      />
     </div>
   );
 }
