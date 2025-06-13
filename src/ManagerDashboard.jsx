@@ -3,7 +3,7 @@ import EngineerList from './EngineerList';
 import ProjectList from './ProjectList';
 import AssignmentList from './AssignmentList';
 
-function ManagerDashboard({ engineers, projects, assignments }) {
+function ManagerDashboard({ engineers, projects, assignments, onLogout }) {
   const [showProjectForm, setShowProjectForm] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
@@ -36,15 +36,7 @@ function ManagerDashboard({ engineers, projects, assignments }) {
         }),
       });
       if (response.ok) {
-        const newProject = await response.json();
         window.location.reload();
-        setProjectName("");
-        setDescription("");
-        setStartDate("");
-        setEndDate("");
-        setRequiredSkills("");
-        setStatus("planning");
-        setShowProjectForm(false);
       } else {
         alert('Failed to create project');
       }
@@ -68,18 +60,11 @@ function ManagerDashboard({ engineers, projects, assignments }) {
           allocationPercentage: parseInt(allocationPercentage),
           startDate,
           endDate,
-          role: "Developer", // Default role
+          role: "Developer",
         }),
       });
       if (response.ok) {
-        const newAssignment = await response.json();
         window.location.reload();
-        setSelectedEngineer("");
-        setSelectedProject("");
-        setAllocationPercentage("");
-        setStartDate("");
-        setEndDate("");
-        setShowAssignmentForm(false);
       } else {
         alert('Failed to create assignment');
       }
@@ -89,11 +74,21 @@ function ManagerDashboard({ engineers, projects, assignments }) {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
-        Manager Dashboard
-      </h1>
-      {/* Team Utilization Chart */}
+    <div className="p-6 relative">
+      {/* Header with Logout */}
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold text-gray-800 text-center w-full">
+          Manager Dashboard
+        </h1>
+        <button
+          onClick={onLogout}
+          className="absolute top-0 right-0 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Utilization Chart */}
       <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Team Utilization</h2>
         <div className="space-y-4">
@@ -113,9 +108,11 @@ function ManagerDashboard({ engineers, projects, assignments }) {
           ))}
         </div>
       </div>
+
       <EngineerList engineers={engineers} />
       <ProjectList projects={projects} />
-      {/* Project Creation Form */}
+
+      {/* Project Form */}
       <div className="p-6 bg-white rounded-xl shadow-lg mt-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Manage Projects</h2>
         <button
@@ -126,82 +123,27 @@ function ManagerDashboard({ engineers, projects, assignments }) {
         </button>
         {showProjectForm && (
           <div className="space-y-4">
-            <div>
-              <label className="text-gray-600 font-medium">Project Name:</label>
-              <input
-                type="text"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-              />
-            </div>
-            <div>
-              <label className="text-gray-600 font-medium">Description:</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-              />
-            </div>
-            <div>
-              <label className="text-gray-600 font-medium">Start Date:</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-              />
-            </div>
-            <div>
-              <label className="text-gray-600 font-medium">End Date:</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-              />
-            </div>
-            <div>
-              <label className="text-gray-600 font-medium">Required Skills (comma-separated):</label>
-              <input
-                type="text"
-                value={requiredSkills}
-                onChange={(e) => setRequiredSkills(e.target.value)}
-                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-                placeholder="e.g., React, Node.js"
-              />
-            </div>
-            <div>
-              <label className="text-gray-600 font-medium">Status:</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-              >
-                <option value="planning">Planning</option>
-                <option value="active">Active</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
-            <div className="flex space-x-4">
-              <button
-                onClick={handleCreateProject}
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
-              >
-                Create Project
-              </button>
-              <button
-                onClick={() => setShowProjectForm(false)}
-                className="bg-gray-300 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-400 transition duration-300"
-              >
-                Cancel
-              </button>
+            <input type="text" placeholder="Project Name" value={projectName} onChange={(e) => setProjectName(e.target.value)} className="w-full p-3 border rounded" />
+            <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full p-3 border rounded" />
+            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full p-3 border rounded" />
+            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full p-3 border rounded" />
+            <input type="text" placeholder="Required Skills (comma-separated)" value={requiredSkills} onChange={(e) => setRequiredSkills(e.target.value)} className="w-full p-3 border rounded" />
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full p-3 border rounded">
+              <option value="planning">Planning</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+            </select>
+            <div className="flex gap-4">
+              <button onClick={handleCreateProject} className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Create Project</button>
+              <button onClick={() => setShowProjectForm(false)} className="bg-gray-300 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-400">Cancel</button>
             </div>
           </div>
         )}
       </div>
+
       <AssignmentList assignments={assignments} engineers={engineers} projects={projects} />
-      {/* Assignment Creation Form */}
+
+      {/* Assignment Form */}
       <div className="p-6 bg-white rounded-xl shadow-lg mt-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Create Assignment</h2>
         <button
@@ -212,68 +154,24 @@ function ManagerDashboard({ engineers, projects, assignments }) {
         </button>
         {showAssignmentForm && (
           <div className="space-y-4">
-            <select
-              value={selectedEngineer}
-              onChange={(e) => setSelectedEngineer(e.target.value)}
-              className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+            <select value={selectedEngineer} onChange={(e) => setSelectedEngineer(e.target.value)} className="w-full p-3 border rounded">
               <option value="">Select Engineer</option>
-              {engineers?.map(engineer => (
-                <option key={engineer._id} value={engineer._id}>
-                  {engineer.name}
-                </option>
+              {engineers.map(engineer => (
+                <option key={engineer._id} value={engineer._id}>{engineer.name}</option>
               ))}
             </select>
-            <select
-              value={selectedProject}
-              onChange={(e) => setSelectedProject(e.target.value)}
-              className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+            <select value={selectedProject} onChange={(e) => setSelectedProject(e.target.value)} className="w-full p-3 border rounded">
               <option value="">Select Project</option>
-              {projects?.map(project => (
-                <option key={project._id} value={project._id}>
-                  {project.name}
-                </option>
+              {projects.map(project => (
+                <option key={project._id} value={project._id}>{project.name}</option>
               ))}
             </select>
-            <input
-              type="number"
-              placeholder="Allocation Percentage"
-              value={allocationPercentage}
-              onChange={(e) => setAllocationPercentage(e.target.value)}
-              className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <div>
-              <label className="text-gray-600 font-medium">Start Date:</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-              />
-            </div>
-            <div>
-              <label className="text-gray-600 font-medium">End Date:</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-              />
-            </div>
-            <div className="flex space-x-4">
-              <button
-                onClick={handleCreateAssignment}
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
-              >
-                Create Assignment
-              </button>
-              <button
-                onClick={() => setShowAssignmentForm(false)}
-                className="bg-gray-300 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-400 transition duration-300"
-              >
-                Cancel
-              </button>
+            <input type="number" placeholder="Allocation Percentage" value={allocationPercentage} onChange={(e) => setAllocationPercentage(e.target.value)} className="w-full p-3 border rounded" />
+            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full p-3 border rounded" />
+            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full p-3 border rounded" />
+            <div className="flex gap-4">
+              <button onClick={handleCreateAssignment} className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Create Assignment</button>
+              <button onClick={() => setShowAssignmentForm(false)} className="bg-gray-300 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-400">Cancel</button>
             </div>
           </div>
         )}
