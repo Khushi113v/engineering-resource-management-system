@@ -37,7 +37,7 @@ function ManagerDashboard({ engineers, projects, assignments }) {
       });
       if (response.ok) {
         const newProject = await response.json();
-        projects.push(newProject);
+        window.location.reload();
         setProjectName("");
         setDescription("");
         setStartDate("");
@@ -73,7 +73,7 @@ function ManagerDashboard({ engineers, projects, assignments }) {
       });
       if (response.ok) {
         const newAssignment = await response.json();
-        assignments.push(newAssignment);
+        window.location.reload();
         setSelectedEngineer("");
         setSelectedProject("");
         setAllocationPercentage("");
@@ -97,7 +97,7 @@ function ManagerDashboard({ engineers, projects, assignments }) {
       <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Team Utilization</h2>
         <div className="space-y-4">
-          {engineers.map(engineer => (
+          {engineers?.map(engineer => (
             <div key={engineer._id} className="flex items-center space-x-4">
               <span className="w-32 text-gray-700 font-medium">{engineer.name}</span>
               <div className="flex-1 bg-gray-200 rounded-full h-6 relative">
@@ -218,7 +218,7 @@ function ManagerDashboard({ engineers, projects, assignments }) {
               className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select Engineer</option>
-              {engineers.map(engineer => (
+              {engineers?.map(engineer => (
                 <option key={engineer._id} value={engineer._id}>
                   {engineer.name}
                 </option>
@@ -230,7 +230,7 @@ function ManagerDashboard({ engineers, projects, assignments }) {
               className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select Project</option>
-              {projects.map(project => (
+              {projects?.map(project => (
                 <option key={project._id} value={project._id}>
                   {project.name}
                 </option>
