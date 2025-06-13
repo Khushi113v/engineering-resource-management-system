@@ -82,7 +82,7 @@ function ManagerDashboard({ engineers, projects, assignments, onLogout }) {
         </h1>
         <button
           onClick={onLogout}
-          className="absolute top-0 right-0 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          className="absolute top-0 right-0 mt-4 mr-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Logout
         </button>
