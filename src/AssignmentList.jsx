@@ -11,9 +11,9 @@ function AssignmentList({ assignments, engineers, projects }) {
     <div className="p-6">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Assignments</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {assignments.map(assignment => {
-          const engineer = engineers.find(e => e._id === assignment.engineerId._id);
-          const project = projects.find(p => p._id === assignment.projectId._id);
+        {assignments?.map(assignment => {
+          const engineer = engineers?.find(e => e._id === assignment.engineerId._id);
+          const project = projects?.find(p => p._id === assignment.projectId._id);
           const timelineWidth = getTimelineWidth(assignment.startDate, assignment.endDate);
           return (
             <div
