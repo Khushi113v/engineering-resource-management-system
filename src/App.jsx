@@ -21,13 +21,13 @@ function App() {
 
   try {
     const [engineersRes, projectsRes, assignmentsRes] = await Promise.all([
-      fetch('http://localhost:5000/api/engineers', {
+      fetch('https://engineering-resource-management-system-gbji.onrender.com/api/engineers', {
         headers: { 'Authorization': `Bearer ${token}` },
       }),
-      fetch('http://localhost:5000/api/projects', {
+      fetch('https://engineering-resource-management-system-gbji.onrender.com/api/engineers', {
         headers: { 'Authorization': `Bearer ${token}` },
       }),
-      fetch('http://localhost:5000/api/assignments', {
+      fetch('https://engineering-resource-management-system-gbji.onrender.com/api/engineers', {
         headers: { 'Authorization': `Bearer ${token}` },
       }),
     ]);
