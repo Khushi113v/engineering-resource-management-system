@@ -57,7 +57,9 @@ function AssignmentList({ assignments = [], engineers = [], projects = [] }) {
               </p>
               <p className="text-gray-600 mt-1">
                 <strong className="text-gray-800">End:</strong>{" "}
-                {new Date(assignment.endDate).toISOString().split("T")[0]}
+                {assignment.endDate && !isNaN(new Date(assignment.endDate)) 
+                  ? new Date(assignment.endDate).toISOString().split("T")[0] 
+                  : "N/A"}
               </p>
               <div className="mt-3">
                 <p className="text-gray-600">Timeline:</p>
