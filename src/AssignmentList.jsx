@@ -1,18 +1,22 @@
-function AssignmentList({ assignments, engineers, projects }) {
-  // Function to calculate timeline width (simplified)
+function AssignmentList({ assignments = [], engineers = [], projects = [] }) {
   const getTimelineWidth = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    const totalDays = (end - start) / (1000 * 60 * 60 * 24); // Difference in days
-    return Math.min((totalDays / 365) * 100, 100); // Simplified: assuming 365 days max
+    const totalDays = (end - start) / (1000 * 60 * 60 * 24);
+    return Math.min((totalDays / 365) * 100, 100);
   };
+
+  if (!assignments.length) {
+    return (
+      <div className="p-6 text-center text-gray-600">No assignments available.</div>
+    );
+  }
 
   return (
     <div className="p-6">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Assignments</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {assignments?.map((assignment) => {
-          // ✅ Safe handling for both string and object IDs
+        {assignments.map((assignment) => {
           const engineerId =
             typeof assignment.engineerId === "string"
               ? assignment.engineerId
@@ -23,12 +27,9 @@ function AssignmentList({ assignments, engineers, projects }) {
               ? assignment.projectId
               : assignment.projectId?._id;
 
-          const engineer = engineers?.find((e) => e._id === engineerId);
-          const project = projects?.find((p) => p._id === projectId);
-          const timelineWidth = getTimelineWidth(
-            assignment.startDate,
-            assignment.endDate
-          );
+          const engineer = engineers.find((e) => e._id === engineerId);
+          const project = projects.find((p) => p._id === projectId);
+          const timelineWidth = getTimelineWidth(assignment.startDate, assignment.endDate);
 
           return (
             <div
