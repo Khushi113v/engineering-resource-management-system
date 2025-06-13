@@ -11,26 +11,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Load userRole from localStorage on first load
-  useEffect(() => {
-    const savedRole = localStorage.getItem('userRole');
-    if (savedRole) {
-      setUserRole(savedRole);
-    }
-  }, []);
-
-  // Fetch data when userRole is set
-  useEffect(() => {
-    if (userRole) {
-      fetchData();
-    }
-  }, [userRole]);
-
-  const handleLogin = (role) => {
-    localStorage.setItem('userRole', role); // Save role
-    setUserRole(role);
-  };
-
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -52,9 +32,9 @@ function App() {
         }),
       ]);
 
-      if (!engineersRes.ok) throw new Error(`Engineers fetch failed: ${engineersRes.status}`);
-      if (!projectsRes.ok) throw new Error(`Projects fetch failed: ${projectsRes.status}`);
-      if (!assignmentsRes.ok) throw new Error(`Assignments fetch failed: ${assignmentsRes.status}`);
+      if (!engineersRes.ok || !projectsRes.ok || !assignmentsRes.ok) {
+        throw new Error('Failed to fetch data.');
+      }
 
       const engineersData = await engineersRes.json();
       const projectsData = await projectsRes.json();
@@ -67,8 +47,32 @@ function App() {
     } catch (err) {
       setError('Error fetching data: ' + err.message);
       setLoading(false);
-      console.error(err);
     }
+  };
+
+  useEffect(() => {
+    const savedRole = localStorage.getItem('role');
+    const token = localStorage.getItem('token');
+    if (savedRole && token) {
+      setUserRole(savedRole);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userRole) {
+      fetchData();
+    }
+  }, [userRole]);
+
+  const handleLogin = (role) => {
+    setUserRole(role);
+    localStorage.setItem("role", role);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("role");
+    localStorage.removeItem("token");
+    setUserRole(null);
   };
 
   if (!userRole) {
@@ -90,12 +94,14 @@ function App() {
           engineers={engineers}
           projects={projects}
           assignments={assignments}
+          onLogout={handleLogout}
         />
       ) : (
         <EngineerDashboard
           engineers={engineers}
           projects={projects}
           assignments={assignments}
+          onLogout={handleLogout}
         />
       )}
     </div>
