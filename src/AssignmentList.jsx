@@ -29,7 +29,12 @@ function AssignmentList({ assignments = [], engineers = [], projects = [] }) {
 
           const engineer = engineers.find((e) => e._id === engineerId);
           const project = projects.find((p) => p._id === projectId);
-          const timelineWidth = getTimelineWidth(assignment.startDate, assignment.endDate);
+          const timelineWidth =
+          assignment.startDate && assignment.endDate &&
+          !isNaN(new Date(assignment.startDate)) &&
+          !isNaN(new Date(assignment.endDate))
+            ? getTimelineWidth(assignment.startDate, assignment.endDate)
+            : 0;
 
           return (
             <div
