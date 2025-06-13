@@ -53,7 +53,7 @@ function AssignmentList({ assignments = [], engineers = [], projects = [] }) {
               </p>
               <p className="text-gray-600 mt-1">
                 <strong className="text-gray-800">Start:</strong>{" "}
-                {new Date(assignment.startDate).toISOString().split("T")[0]}
+                {assignment.startDate ? new Date(assignment.startDate).toISOString().split("T")[0] : "N/A"}
               </p>
               <p className="text-gray-600 mt-1">
                 <strong className="text-gray-800">End:</strong>{" "}
